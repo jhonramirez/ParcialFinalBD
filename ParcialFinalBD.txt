@@ -1,0 +1,66 @@
+--1. Value (1.75)
+
+CREATE TYPE number_array IS VARRAY(100) OF INTEGER;
+
+DECLARE
+    arreglo number_array;
+BEGIN
+     arreglo:= varray_type(1,2,3,4,5,6);
+	 x := (5);
+     divisible_sum_pairs(arreglo, x);
+END;
+
+CREATE OR REPLACE FUNCTION divisible_sum_pairs(arreglo varray_type, x varray_type) 
+RETURN DECIMAL IS
+BEGIN
+    FOR i IN 1..arreglo.COUNT LOOP
+     DBMS_OUTPUT.PUT_LINE(arreglo(i));
+		FOR j IN 1..arreglo.COUNT LOOP
+			IF MOD(arreglo(i),2) = 0 THEN
+			DBMS_OUTPUT.PUT_LINE(arreglo(i)/x(j));
+			END IF;
+		END LOOP;
+    END LOOP; 
+END;
+
+
+--3. Stored Procedure (0.5)
+
+CREATE TABLE digits 
+(
+    n integer, 
+    pairs integer
+);
+
+INSERT INTO digits (n, pairs) values (5, 5);
+INSERT INTO digits (n, pairs) values (5, 5);
+INSERT INTO digits (n, pairs) values (5, 5);
+INSERT INTO digits (n, pairs) values (5, 5);
+INSERT INTO digits (n, pairs) values (5, 5);
+
+CREATE OR REPLACE FUNCTION find_digits(n integer, pairs integer) RETURN INTEGER IS
+    i INTEGER := 1;
+    CON INTEGER :=0;  
+    POS INTEGER :=0;
+BEGIN
+        WHILE(i <= length(n))LOOP
+            POS:= INSTR(n, pairs, i);
+            IF POS  = 0 THEN
+                i := length(n) +1;
+            ELSE
+                i := POS +1;
+                CON := CON +1;              
+            END IF; 
+        END LOOP;
+        RETURN CON;
+END;
+
+CREATE OR REPLACE PROCEDURE CALCULATE_FIND_DIGITS(find_digits integer) as
+BEGIN
+    UPDT := select pairs from digits;
+	UPDATE digits set n := UPDT;
+END;
+
+EXEC CALCULATE_FIND_DIGITS(6);
+
+SELECT * FROM digits;
